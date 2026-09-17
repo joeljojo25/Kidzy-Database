@@ -7,22 +7,101 @@
 <meta name="apple-mobile-web-app-title" content="Kidzy">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
+
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" sizes="180x180" href="./icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./icon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./icon.png">
+<link rel="icon" type="image/png" href="./icon.png">
+
 <title>Kidzy</title>
+
 <style>
-html,body{margin:0;width:100%;height:100%;background:#f4f7f5;font-family:Arial,sans-serif}
-body{display:flex;align-items:center;justify-content:center}
-img{width:110px;height:110px;border-radius:26px;box-shadow:0 5px 20px rgba(0,0,0,.12)}
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  background:#f4f7f5;
+  font-family:Arial,sans-serif;
+  overflow:hidden;
+}
+#app {
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+}
+#loading {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+}
+#loading img {
+  width:120px;
+  height:120px;
+  object-fit:cover;
+  border-radius:28px;
+  box-shadow:0 5px 20px rgba(0,0,0,.14);
+}
+#loading-text {
+  font-size:16px;
+  color:#17452c;
+  font-weight:bold;
+}
+iframe {
+  width:100%;
+  height:100%;
+  border:0;
+  display:none;
+  background:white;
+}
 </style>
 </head>
+
 <body>
-<img src="icon.png" alt="Kidzy">
+<div id="app">
+  <div id="loading">
+    <img src="./icon.png" alt="Kidzy">
+    <div id="loading-text">Opening Kidzy Database...</div>
+  </div>
+
+  <iframe
+    id="database"
+    src="https://script.google.com/macros/s/AKfycby1UEI81dwJPU-EH7c9aoVsxaS8mqf1ewtdsQfSncE-yGR_x-Oy16MajtOtFtPqBg/exec"
+    title="Kidzy Database"
+    allow="clipboard-read; clipboard-write">
+  </iframe>
+</div>
+
 <script>
-const target = 'https://script.google.com/macros/s/AKfycby1UEI81dwJPU-EH7c9aoVsxaS8mqf1ewtdsQfSncE-yGR_x-Oy16MajtOtFtPqBg/exec';
-window.location.replace(target);
+const frame = document.getElementById("database");
+const loading = document.getElementById("loading");
+
+frame.addEventListener("load", function() {
+  loading.style.display = "none";
+  frame.style.display = "block";
+});
+
+// If Google blocks iframe embedding, give a clear fallback instead of
+// silently redirecting and causing Safari to associate the Google "G"
+// icon with the Home Screen shortcut.
+setTimeout(function() {
+  if (frame.style.display !== "block") {
+    document.getElementById("loading-text").textContent =
+      "If the database does not open, tap here to open it.";
+    const button = document.createElement("button");
+    button.textContent = "Open Kidzy Database";
+    button.style.cssText =
+      "padding:14px 22px;border:0;border-radius:12px;background:#278653;color:white;font-size:16px;font-weight:bold;";
+    button.onclick = function() {
+      window.open('https://script.google.com/macros/s/AKfycby1UEI81dwJPU-EH7c9aoVsxaS8mqf1ewtdsQfSncE-yGR_x-Oy16MajtOtFtPqBg/exec', "_blank");
+    };
+    loading.appendChild(button);
+  }
+}, 7000);
 </script>
-<noscript><p><a href="https://script.google.com/macros/s/AKfycby1UEI81dwJPU-EH7c9aoVsxaS8mqf1ewtdsQfSncE-yGR_x-Oy16MajtOtFtPqBg/exec">Open Kidzy Database</a></p></noscript>
 </body>
 </html>
